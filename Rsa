@@ -1,0 +1,48 @@
+def gcd(m, n):
+    while n != 0:
+        r = m % n
+        m = n
+        n = r
+    return m
+
+def rsa_encrypt_decrypt():
+    message = input("Enter the message to be encrypted: ").lower()
+    p = int(input("Enter value of p: "))
+    q = int(input("Enter value of q: "))
+
+    n = p * q
+    phi = (p - 1) * (q - 1)
+
+    # Find e
+    e = 0
+    for i in range(2, phi):
+        if gcd(i, phi) == 1:
+            e = i
+            break
+
+    # Find d
+    d = 0
+    for i in range(2, phi):
+        if (e * i - 1) % phi == 0:
+            d = i
+            break
+
+    print(f"Public Key: (e={e}, n={n})")
+    print(f"Private Key: (d={d}, n={n})")
+
+    # Convert message to numbers
+    nummes = [ord(char) - 96 for char in message]
+    
+    # Encrypt message
+    encrypted = [(num ** e) % n for num in nummes]
+    print("\nEncrypted message:")
+    print(" ".join(map(str, encrypted)))
+
+    # Decrypt message
+    decrypted = [(num ** d) % n for num in encrypted]
+    decrypted_message = "".join(chr(num + 96) for num in decrypted)
+    print("\nDecrypted message:")
+    print(decrypted_message)
+
+if __name__ == "__main__":
+    rsa_encrypt_decrypt()
